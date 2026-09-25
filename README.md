@@ -3,10 +3,10 @@
   <em>Your personal cinematic companion for effortlessly tracking popular films.</em>
   <br>
   <br>
-  <img alt="Build Status" src="https://img.shields.io/github/workflow/status/your-org/Movie_react/CI/main?style=flat-square&label=Build&logo=github" />
+  <!-- <img alt="Build Status" src="https://img.shields.io/github/workflow/status/your-org/Movie_react/CI/main?style=flat-square&label=Build&logo=github" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" />
   <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" />
-  <img alt="GitHub Stars" src="https://img.shields.io/github/stars/your-org/Movie_react?style=flat-square&logo=github" />
+  <img alt="GitHub Stars" src="https://img.shields.io/github/stars/your-org/Movie_react?style=flat-square&logo=github" /> -->
 </p>
 
 ---
