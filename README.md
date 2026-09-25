@@ -1,158 +1,178 @@
+<h1 align="center">🎬 Movie_react</h1>
+
 <p align="center">
-  <h1>Movie_react</h1>
-  <em>Your personal cinematic companion for effortlessly tracking popular films.</em>
-  <br>
-  <br>
-  <!-- <img alt="Build Status" src="https://img.shields.io/github/workflow/status/your-org/Movie_react/CI/main?style=flat-square&label=Build&logo=github" />
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" />
-  <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" />
-  <img alt="GitHub Stars" src="https://img.shields.io/github/stars/your-org/Movie_react?style=flat-square&logo=github" /> -->
+  Browse popular movies, search by title, and keep your own <b>Favorites</b> and <b>Watched</b> lists.
+</p>
+
+<p align="center">
+  <a href="https://movie-react-xi.vercel.app/"><b>🔗 Live Demo</b></a>
+</p>
+
+<p align="center">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img alt="React Router" src="https://img.shields.io/badge/React_Router-7-CA4245?style=flat-square&logo=reactrouter&logoColor=white" />
+  <img alt="TMDB" src="https://img.shields.io/badge/Data-TMDB-01B4E4?style=flat-square&logo=themoviedatabase&logoColor=white" />
+  <img alt="Vercel" src="https://img.shields.io/badge/Deployed_on-Vercel-000?style=flat-square&logo=vercel" />
 </p>
 
 ---
 
-## The Strategic "Why" (Overview)
+## Overview
 
-> Tired of forgetting which popular movies you've watched or struggling to keep track of your favorites? Navigating endless streaming platforms to find something new can be a chore, and maintaining a personal movie watchlist often becomes an unorganized mess. This fragmentation leads to frustration and missed opportunities to revisit cherished films or discover new ones efficiently.
+**Movie_react** is a single-page React app that shows the movies currently popular on [The Movie Database (TMDB)](https://www.themoviedb.org/) and lets you build two personal lists:
 
-`Movie_react` provides a streamlined, intuitive platform designed to simplify your cinematic journey. By offering a clean interface to discover trending films, mark favorites, and track your viewing history, this application ensures you never lose track of your cinematic journey again. It empowers users with a centralized, organized hub for their movie preferences, enhancing the overall movie-watching experience.
+- **Favorites** ❤️ for the movies you love
+- **Watched** 🍿 for the movies you've already seen
 
-## Key Features
+Both lists are stored in your browser's `localStorage`, so they're still there after you refresh or come back later. You don't need an account.
 
-`Movie_react` is engineered with user convenience at its core, offering a suite of features designed to enhance your movie discovery and tracking experience:
+The TMDB API key never reaches the browser. Every request goes through a small **Vercel serverless function** (`/api/movies`), which adds the key on the server and forwards the call to TMDB.
 
-*   ✨ **Discover Trending Movies**: Effortlessly browse a curated list of the most popular films currently captivating audiences, ensuring you're always in the loop.
-*   ❤️ **Personalized Favorites**: Mark and revisit your beloved movies with a single click, creating your custom cinematic collection that's always at your fingertips.
-*   ✅ **Track Watched Films**: Keep a clear and organized record of all the movies you've completed, avoiding re-watches and simplifying future recommendations.
-*   🔍 **Seamless Search Functionality**: Quickly find any movie by title, actor, or genre (if integrated with a robust API), making your movie discovery journey efficient and enjoyable.
-*   📱 **Responsive & Intuitive Design**: Enjoy a consistent and user-friendly experience across all devices, from desktops to mobile phones, ensuring accessibility wherever you are.
-*   ⚡ **Fast & Modern Web Experience**: Built with cutting-edge web technologies, `Movie_react` delivers a snappy, responsive, and engaging user interface.
+## Features
 
-## Technical Architecture
+| | Feature | Details |
+|---|---|---|
+| 🔥 | **Popular movies** | The home page loads TMDB's current popular movies on start. |
+| 🔍 | **Search** | Search TMDB's catalog by movie title. |
+| ❤️ | **Favorites** | Tap the heart on any poster to add it to Favorites or remove it. |
+| 🍿 | **Watched list** | Tap the ticket 🎟️ to mark a movie as watched (it turns into 🍿). |
+| 💾 | **Saved locally** | Both lists are kept in `localStorage`, so no sign-up is needed. |
+| 🔐 | **Hidden API key** | The key stays in the serverless function and is never bundled into client code. |
+| 🧭 | **Client-side routing** | Pages at `/`, `/favorites` and `/watched`, using React Router. |
 
-This project leverages a modern JavaScript ecosystem to deliver a dynamic and responsive user experience.
+## Tech Stack
 
-### Tech Stack
+| Layer | Tool |
+|---|---|
+| UI | [React 19](https://react.dev/) |
+| Routing | [React Router 7](https://reactrouter.com/) |
+| State | React Context API (`MovieContext`) + `localStorage` |
+| Build / Dev server | [Vite 8](https://vite.dev/) with `@vitejs/plugin-react` |
+| Linting | [Oxlint](https://oxc.rs/docs/guide/usage/linter) |
+| API proxy | Vercel Serverless Function (`api/movies.js`) |
+| Data source | [TMDB API v3](https://developer.themoviedb.org/docs) |
+| Hosting | [Vercel](https://vercel.com/) |
 
-| Technology   | Purpose                           | Key Benefit                                |
-| :----------- | :-------------------------------- | :----------------------------------------- |
-| **JavaScript** | Primary scripting language        | Dynamic client-side interactivity          |
-| **React**      | Frontend UI library               | Component-based, efficient UI rendering    |
-| **Node.js**    | Runtime environment (Development) | Cross-platform, robust package management  |
-| **Vite**       | Build Tool / Development Server   | Extremely fast HMR (Hot Module Replacement) |
-| **HTML**       | Core web content structure        | Standard for web page layout and content   |
+## How It Works
 
-### Directory Structure
+```
+ Browser (React)                     Vercel Function                 TMDB
+ ───────────────                     ───────────────                 ────
+ getPopularMovies()  ──►  GET /api/movies            ──►  /3/movie/popular
+ searchMovies(q)     ──►  GET /api/movies?query=q    ──►  /3/search/movie?query=q
+                                  ▲
+                         adds TMDB_API_KEY
+                         (server-side only)
+```
 
-The project's codebase is organized for clarity and maintainability:
+- **`src/services/api.js`** calls `/api/movies`, never TMDB directly.
+- **`api/movies.js`** reads `TMDB_API_KEY` from the environment, picks the *popular* or *search* endpoint depending on whether `query` is set, and passes TMDB's response back unchanged.
+- **`vite.config.js`** includes a small `local-api` plugin that runs the same handler inside the Vite dev server, so `/api/movies` behaves the same with `npm run dev` as it does on Vercel.
+- **`vercel.json`** sends every non-`/api` route to `index.html`, so a refresh on `/favorites` or `/watched` still loads the app.
+
+## Project Structure
 
 ```
 Movie_react/
-├── 📁 api/
-├── 📁 public/
-├── 📁 src/
-│   └── ... (React components, styles, logic)
-├── 📄 .gitignore
-├── 📄 .oxlintrc.json
-├── 📄 README.md
-├── 📄 index.html
-├── 📄 package-lock.json
-├── 📄 package.json
-├── 📄 vercel.json
-└── 📄 vite.config.js
+├── api/
+│   └── movies.js            # Vercel serverless proxy to TMDB (popular + search)
+├── public/
+│   ├── favicon.svg
+│   └── icons.svg
+├── src/
+│   ├── assets/              # Static images
+│   ├── components/
+│   │   ├── MovieCard.jsx    # Poster, title, release date, ❤️ and 🎟️ buttons
+│   │   └── NavBar.jsx       # Top navigation bar
+│   ├── contexts/
+│   │   └── MovieContext.jsx # Favorites and Watched state, synced to localStorage
+│   ├── css/                 # Per-page and per-component stylesheets
+│   ├── pages/
+│   │   ├── Home.jsx         # Popular movies + search form
+│   │   ├── Favorites.jsx    # Favorites list
+│   │   └── Watched.jsx      # Watched list
+│   ├── services/
+│   │   └── api.js           # getPopularMovies(), searchMovies()
+│   ├── App.jsx              # Routes and layout
+│   └── main.jsx             # Entry point (BrowserRouter + StrictMode)
+├── .oxlintrc.json           # Oxlint rules
+├── index.html
+├── package.json
+├── vercel.json              # SPA rewrites
+└── vite.config.js           # Vite config + local /api/movies middleware
 ```
 
-## Operational Setup
-
-Follow these instructions to get `Movie_react` up and running on your local machine for development and testing purposes.
+## Getting Started
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
+- **Node.js 20.19+ or 22.12+** (required by Vite 8), which comes with npm
+- A free **TMDB API key (v3)**. Create a [TMDB account](https://www.themoviedb.org/signup), then open **Settings → API** to get one.
 
-*   **Node.js**: [LTS version recommended](https://nodejs.org/en/download/) (Includes npm).
+### 1. Clone and install
 
-### Installation
-
-1.  **Clone the repository**:
-
-    ```bash
-    git clone https://github.com/your-org/Movie_react.git
-    cd Movie_react
-    ```
-
-2.  **Install dependencies**:
-
-    Using npm:
-    ```bash
-    npm install
-    ```
-
-    Alternatively, using Yarn:
-    ```bash
-    yarn install
-    ```
-
-    Or using pnpm:
-    ```bash
-    pnpm install
-    ```
-
-3.  **Start the development server**:
-
-    ```bash
-    npm run dev
-    ```
-
-    The application will typically be accessible at `http://localhost:5173` (or another port as indicated in your terminal).
-
-### Environment Configuration
-
-While not explicitly in the root file list, modern web applications often rely on environment variables for API keys or other sensitive configurations, especially when connecting to external movie databases.
-
-If the application requires an API key (e.g., for a movie database like TMDB):
-
-1.  Create a file named `.env` in the root of the project.
-2.  Add your API key(s) in the format `VITE_APP_API_KEY=your_api_key_here`.
-    *(Note: Vite requires environment variables to be prefixed with `VITE_` to be exposed to the client-side code).*
-
-Example `.env` file:
-
-```
-VITE_APP_MOVIE_API_KEY=your_actual_movie_api_key
+```bash
+git clone https://github.com/ShardulPanchal24/Movie_react.git
+cd Movie_react
+npm install
 ```
 
-Consult the `src` directory or `api` folder for specific environment variable names used within the application.
+### 2. Add your API key
 
-## Community & Governance
+Create a `.env` file in the project root:
 
-We welcome contributions from the community to make `Movie_react` even better!
+```env
+TMDB_API_KEY=your_tmdb_v3_api_key_here
+```
 
-### Contributing
+> **Note:** Leave off the `VITE_` prefix. That keeps the key out of the browser bundle. `vite.config.js` loads it only for the local API middleware. `.env` is already in `.gitignore`.
 
-To contribute to this project, please follow these steps:
+### 3. Run the dev server
 
-1.  **Fork** the repository on GitHub.
-2.  **Clone** your forked repository to your local machine.
-3.  **Create a new branch** for your feature or bug fix: `git checkout -b feature/your-feature-name` or `git checkout -b bugfix/issue-description`.
-4.  **Make your changes**, ensuring they adhere to the project's coding standards.
-5.  **Commit your changes** with a clear and descriptive commit message.
-6.  **Push your branch** to your forked repository.
-7.  **Open a Pull Request** from your branch to the `main` branch of the original `Movie_react` repository. Provide a detailed description of your changes.
+```bash
+npm run dev
+```
 
-### License
+Open the URL shown in your terminal (usually <http://localhost:5173>).
 
-This project is open-source and distributed under the **MIT License**.
+## Available Scripts
 
-The MIT License grants you the following permissions:
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Vite dev server with hot reload and the local `/api/movies` proxy |
+| `npm run build` | Create a production build in `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | Lint the project with Oxlint |
 
-*   **Commercial Use**: You are free to use this software for commercial purposes.
-*   **Modification**: You can modify the software to suit your needs.
-*   **Distribution**: You can distribute the software.
-*   **Private Use**: You can use the software privately.
+> `npm run preview` serves only the static build, without the `/api` proxy. To test the full production setup locally, use `vercel dev` from the [Vercel CLI](https://vercel.com/docs/cli).
 
-The MIT License imposes the following conditions:
+## Deploying to Vercel
 
-*   **License and Copyright Notice**: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+1. Push the repo to GitHub and **import it** in the [Vercel dashboard](https://vercel.com/new).
+2. Vercel detects **Vite** automatically (build: `npm run build`, output: `dist`).
+3. Under **Settings → Environment Variables**, add:
+   | Name | Value |
+   |---|---|
+   | `TMDB_API_KEY` | your TMDB v3 API key |
+4. Deploy. Vercel serves `api/movies.js` as a serverless function, and `vercel.json` handles client-side routes.
 
-For the full text of the license, please refer to the `LICENSE` file in the root of this repository.
+## Roadmap Ideas
+
+- [ ] Movie details page (overview, rating, cast, trailer)
+- [ ] Pagination / infinite scroll for popular and search results
+- [ ] Placeholder image for movies without a poster
+- [ ] "Clear search" button to return to popular movies
+- [ ] Sorting and filtering within Favorites and Watched
+
+## Acknowledgements
+
+- Movie data and images from [TMDB](https://www.themoviedb.org/).
+  *This product uses the TMDB API but is not endorsed or certified by TMDB.*
+- Bootstrapped with the official [Vite React template](https://vite.dev/guide/).
+
+## Author
+
+**Shardul Panchal** · [@ShardulPanchal24](https://github.com/ShardulPanchal24)
+
+If you find this project useful, consider giving it a ⭐ on GitHub!
